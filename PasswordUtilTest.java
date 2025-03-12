@@ -2,25 +2,47 @@ package com.example.lab1;
 
 import com.example.lab1.utils.PasswordUtil;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-class PasswordUtilTest {
+public class PasswordUtilTest {
+
     @Test
-    void encryptPassword_ReturnsHashedString() {
-        String hashed = PasswordUtil.encryptPassword("password123");
-        assertThat(hashed).isNotBlank();
-        assertThat(hashed).isNotEqualTo("password123");
+    void encryptPassword_ValidPassword_ReturnsEncryptedPassword() {
+        // 执行测试
+        String plainPassword = "Test123";
+        String encryptedPassword = PasswordUtil.encryptPassword(plainPassword);
+
+        // 验证结果
+        assertNotNull(encryptedPassword);
+        assertNotEquals(plainPassword, encryptedPassword);
+        assertTrue(encryptedPassword.startsWith("$2a$"));
     }
 
     @Test
-    void checkPassword_ValidPassword_ReturnsTrue() {
-        String hashed = PasswordUtil.encryptPassword("password123");
-        assertThat(PasswordUtil.checkPassword("password123", hashed)).isTrue();
+    void checkPassword_CorrectPassword_ReturnsTrue() {
+        // 准备测试数据
+        String plainPassword = "Test123";
+        String encryptedPassword = PasswordUtil.encryptPassword(plainPassword);
+
+        // 执行测试
+        boolean result = PasswordUtil.checkPassword(plainPassword, encryptedPassword);
+
+        // 验证结果
+        assertTrue(result);
     }
 
     @Test
-    void checkPassword_InvalidPassword_ReturnsFalse() {
-        String hashed = PasswordUtil.encryptPassword("password123");
-        assertThat(PasswordUtil.checkPassword("wrongpass", hashed)).isFalse();
+    void checkPassword_IncorrectPassword_ReturnsFalse() {
+        // 准备测试数据
+        String correctPassword = "Test123";
+        String wrongPassword = "Test456";
+        String encryptedPassword = PasswordUtil.encryptPassword(correctPassword);
+
+        // 执行测试
+        boolean result = PasswordUtil.checkPassword(wrongPassword, encryptedPassword);
+
+        // 验证结果
+        assertFalse(result);
     }
 }
+
